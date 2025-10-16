@@ -1,43 +1,57 @@
-import streamlit as st
-from langchain.vectorstores import FAISS
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import ConversationalRetrievalChain
-import pickle, os
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
+# 🤖 AI Customer Support Chatbot  
 
-st.set_page_config(page_title="AI Chatbot", layout="wide")
+An intelligent chatbot that answers customer queries using **AI + Retrieval-Augmented Generation (RAG)**.  
+It reads from your **FAQ PDF dataset** and gives **accurate, context-based answers**.  
 
-# Load FAISS index
-def load_faiss():
-    with open("faiss_index/index.pkl", "rb") as f:
-        index = pickle.load(f)
-    faiss_store = FAISS.load_local("faiss_index", OpenAIEmbeddings(), allow_dangerous_deserialization=True)
-    return faiss_store
+---
 
-st.title("💬 AI Customer Support Chatbot")
-st.write("Chat with your own documents powered by FAISS + LangChain!")
+## 🚀 Features  
 
-# Initialize chat
-if "conversation" not in st.session_state:
-    st.session_state.conversation = None
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+- ⚡ **Instant Answers:** Pulls information directly from your uploaded PDF.  
+- 🧠 **Smart Search:** Uses FAISS vector database to find the most relevant responses.  
+- 💬 **AI-Powered Replies:** Powered by Google’s FLAN-T5 model for natural, fluent answers.  
+- 🌐 **Interactive UI:** Simple Streamlit interface for live chat.  
 
-api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    st.warning("⚠️ Add your OpenAI API key to .env")
-else:
-    vectorstore = load_faiss()
-    llm = ChatOpenAI(temperature=0.3)
-    chain = ConversationalRetrievalChain.from_llm(llm, vectorstore.as_retriever())
+---
 
-    query = st.chat_input("Ask me anything...")
-    if query:
-        response = chain({"question": query, "chat_history": st.session_state.chat_history})
-        st.session_state.chat_history.append((query, response["answer"]))
-        st.write("**You:**", query)
-        st.write("**Bot:**", response["answer"])
+## 🧩 Project Structure
+
+CustomerSupportChatbot/
+├─ app.py # Streamlit chatbot app
+├─ faiss_index/ # FAISS index files (vector database)
+├─ AI_Customer_Support_FAQ_Dataset.pdf # Custom dataset
+├─ requirements.txt # Python dependencies
+├─ README.md # Documentation (this file)
+
+
+---
+
+## ⚙️ Installation & Setup  
+
+### 1️⃣ Clone this repository  
+```bash
+git clone https://github.com/YOUR-USERNAME/CustomerSupportChatbot.git
+cd CustomerSupportChatbot
+
+2️⃣ Install dependencies
+pip install -r requirements.txt
+
+3️⃣ Run Streamlit app
+streamlit run app.py
+
+💡 Once it runs, open the URL in your terminal — your chatbot will appear in the browser 🌍
+
+🧠 How It Works
+
+The PDF is converted into text using LangChain’s document loader.
+Text is embedded into vector form using SentenceTransformer.
+The FAISS index stores and retrieves the closest matching answers.
+The FLAN-T5 model uses that context to generate smooth, accurate responses.
+
+🧑‍💻 Author
+
+ AI & Computing Enthusiast 
+Built with 💖 using LangChain, Streamlit, and Transformers.
+
+⭐ If you like this project, don’t forget to star the repo!
