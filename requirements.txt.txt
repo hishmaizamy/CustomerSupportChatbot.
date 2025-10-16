@@ -1,0 +1,13 @@
+requirements.txt
+
+
+langchain
+openai
+faiss-cpu
+tiktoken
+streamlit
+python-dotenv
+sentence-transformers
+PyPDF2
+pandas
+numpy
